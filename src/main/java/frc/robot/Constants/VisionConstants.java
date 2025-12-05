@@ -19,7 +19,7 @@ public final class VisionConstants {
 
     /** Layout oficial de AprilTags */
     public static final AprilTagFieldLayout kTagLayout =
-        AprilTagFields.k2025ReefscapeAndyMark.loadAprilTagLayoutField();
+    AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
     /** Transformo da câmera no robô */
     public static final Transform3d kRobotToCam = new Transform3d(

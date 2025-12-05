@@ -25,7 +25,7 @@ public class RobotContainer {
     private final Joystick joystick = new Joystick(0);
 
     // ========== CÂMERAS ==========
-    private final PhotonCamera aprilTagCamera = new PhotonCamera("aprilcam");  // PhotonVision
+    private final PhotonCamera aprilTagCamera = new PhotonCamera("aprilcam");
 
     // ========== SHUFFLEBOARD ==========
     private final ShuffleboardTab driveTab = Shuffleboard.getTab("Driver");
@@ -33,83 +33,77 @@ public class RobotContainer {
 
     public RobotContainer() {
 
-        // =====================================
-        // DEFAULT COMMAND → DIRIGIR COM JOYSTICK
-        // =====================================
+        // =====================================================================
+        // Default: dirigir com joystick
+        // =====================================================================
         driveSubsystem.setDefaultCommand(
             new JoystickDriveCommand(driveSubsystem, joystick)
         );
 
-        // =====================================
-        //  CAMERA DO PILOTO (USB)
-        // =====================================
+        // =====================================================================
+        // Camera USB do piloto
+        // =====================================================================
         UsbCamera driverCam = CameraServer.startAutomaticCapture(0);
         driverCam.setFPS(30);
         driverCam.setResolution(320, 240);
 
-        driveTab.add("Driver Camera", driverCam)
-                .withSize(4, 3);
+        driveTab.add("Driver Camera", driverCam).withSize(4, 3);
 
-        // =====================================
-        //  STREAM DA CÂMERA PHOTONVISION
-        // =====================================
-        visionTab.add("AprilTag Camera", aprilTagCamera)
-                .withSize(4, 3);
+        // =====================================================================
+        // Stream da camera PhotonVision
+        // =====================================================================
+        visionTab.add("AprilTag Camera", aprilTagCamera).withSize(4, 3);
 
-        // =====================================
-        //  MÉTRICAS DO PHOTONVISION
-        // =====================================
+        // =====================================================================
+        // Função correta para pegar o último resultado
+        // =====================================================================
+        visionTab.addBoolean("Tem Alvo?", () -> {
+            var list = aprilTagCamera.getAllUnreadResults();
+            if (list.isEmpty()) return false;
+            return list.get(list.size() - 1).hasTargets();
+        });
 
-        visionTab.addBoolean(
-            "Tem Alvo?",
-            () -> aprilTagCamera.getLatestResult().hasTargets()
-        );
+        visionTab.addNumber("Yaw (tx)", () -> {
+            var list = aprilTagCamera.getAllUnreadResults();
+            if (list.isEmpty()) return 0;
+            var r = list.get(list.size() - 1);
+            return r.hasTargets() ? r.getBestTarget().getYaw() : 0;
+        });
 
-        visionTab.addNumber(
-            "Yaw (tx)",
-            () -> aprilTagCamera.getLatestResult().hasTargets()
-                ? aprilTagCamera.getLatestResult().getBestTarget().getYaw()
-                : 0
-        );
+        visionTab.addNumber("Pitch (ty)", () -> {
+            var list = aprilTagCamera.getAllUnreadResults();
+            if (list.isEmpty()) return 0;
+            var r = list.get(list.size() - 1);
+            return r.hasTargets() ? r.getBestTarget().getPitch() : 0;
+        });
 
-        visionTab.addNumber(
-            "Pitch (ty)",
-            () -> aprilTagCamera.getLatestResult().hasTargets()
-                ? aprilTagCamera.getLatestResult().getBestTarget().getPitch()
-                : 0
-        );
+        visionTab.addNumber("Área", () -> {
+            var list = aprilTagCamera.getAllUnreadResults();
+            if (list.isEmpty()) return 0;
+            var r = list.get(list.size() - 1);
+            return r.hasTargets() ? r.getBestTarget().getArea() : 0;
+        });
 
-        visionTab.addNumber(
-            "Área",
-            () -> aprilTagCamera.getLatestResult().hasTargets()
-                ? aprilTagCamera.getLatestResult().getBestTarget().getArea()
-                : 0
-        );
+        visionTab.addNumber("Timestamp (ms)", () -> {
+            var list = aprilTagCamera.getAllUnreadResults();
+            if (list.isEmpty()) return 0;
+            return list.get(list.size() - 1).getTimestampSeconds() * 1000;
+        });
 
-        // Timestamp substitui latência (PhotonVision 2024 removeu getLatencyMillis)
-        visionTab.addNumber(
-            "Timestamp (ms)",
-            () -> aprilTagCamera.getLatestResult().getTimestampSeconds() * 1000
-        );
-
-        // =====================================
-        //  GANHOS AJUSTÁVEIS NO SHUFFLEBOARD
-        // =====================================
+        // =====================================================================
+        // Ajustes de alinhamento no Shuffleboard
+        // =====================================================================
         visionTab.add("kP Girar", 0.02);
         visionTab.add("MinPower", 0.05);
 
-        // =====================================
-        //  BINDS DO JOYSTICK
-        // =====================================
         configureBindings();
     }
 
-    // ============================================================
-    // BINDINGS DO CONTROLE
-    // ============================================================
+    // =====================================================================
+    // Binds do Controle
+    // =====================================================================
     private void configureBindings() {
 
-        // Botão 2 → Alinhamento automático com AprilTag
         new JoystickButton(joystick, 2)
             .whileTrue(
                 new AlignToAprilTagCommand(

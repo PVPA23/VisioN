@@ -25,31 +25,41 @@ public class AlignToAprilTagCommand extends Command {
 
     @Override
     public void execute() {
-
-        var result = camera.getLatestResult();
-
+    
+        var results = camera.getAllUnreadResults();
+    
+        // Nenhum frame novo recebido
+        if (results.isEmpty()) {
+            drive.arcadeDrive(0, 0, false);
+            return;
+        }
+    
+        // Pega o último resultado recebido (o mais recente)
+        var result = results.get(results.size() - 1);
+    
         if (!result.hasTargets()) {
             drive.arcadeDrive(0, 0, false);
             return;
         }
-
+    
         PhotonTrackedTarget target = result.getBestTarget();
         double yaw = target.getYaw();
-
-        // Recuperando valores do Shuffleboard
+    
         double kP = tab.getLayout("Calibration", "List")
                         .add("kP", 0.02).getEntry().getDouble(0.02);
+    
         double minPower = tab.getLayout("Calibration", "List")
                         .add("MinPower", 0.05).getEntry().getDouble(0.05);
-
+    
         double turnPower = kP * yaw;
-
+    
         if (Math.abs(turnPower) < minPower) {
             turnPower = Math.signum(turnPower) * minPower;
         }
-
+    
         drive.arcadeDrive(0, -turnPower, false);
     }
+    
 
     @Override
     public void end(boolean interrupted) {
