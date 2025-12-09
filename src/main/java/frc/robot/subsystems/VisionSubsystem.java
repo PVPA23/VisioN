@@ -84,8 +84,8 @@ public class VisionSubsystem extends SubsystemBase {
 
             targetsEntry.setDouble(result.getTargets().size());
 
-            latencyEntry.setDouble(result.getTimestampSeconds() * 1000.0);
-            timestampEntry.setDouble(result.getTimestampSeconds() * 1000.0);
+            latencyEntry.setDouble(result.getTimestampSeconds());
+            timestampEntry.setDouble(result.getTimestampSeconds());
 
             double distance = estimateDistance(t.getPitch());
             distanceEntry.setDouble(distance);

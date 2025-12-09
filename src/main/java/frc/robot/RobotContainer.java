@@ -33,30 +33,22 @@ public class RobotContainer {
 
     public RobotContainer() {
 
-        // =====================================================================
         // Default: dirigir com joystick
-        // =====================================================================
         driveSubsystem.setDefaultCommand(
             new JoystickDriveCommand(driveSubsystem, joystick)
         );
 
-        // =====================================================================
         // Camera USB do piloto
-        // =====================================================================
         UsbCamera driverCam = CameraServer.startAutomaticCapture(0);
         driverCam.setFPS(30);
         driverCam.setResolution(320, 240);
 
         driveTab.add("Driver Camera", driverCam).withSize(4, 3);
 
-        // =====================================================================
         // Stream da camera PhotonVision
-        // =====================================================================
         visionTab.add("AprilTag Camera", aprilTagCamera).withSize(4, 3);
 
-        // =====================================================================
         // Função correta para pegar o último resultado
-        // =====================================================================
         visionTab.addBoolean("Tem Alvo?", () -> {
             var list = aprilTagCamera.getAllUnreadResults();
             if (list.isEmpty()) return false;
@@ -90,18 +82,14 @@ public class RobotContainer {
             return list.get(list.size() - 1).getTimestampSeconds() * 1000;
         });
 
-        // =====================================================================
         // Ajustes de alinhamento no Shuffleboard
-        // =====================================================================
         visionTab.add("kP Girar", 0.02);
         visionTab.add("MinPower", 0.05);
 
         configureBindings();
     }
 
-    // =====================================================================
     // Binds do Controle
-    // =====================================================================
     private void configureBindings() {
 
         new JoystickButton(joystick, 2)

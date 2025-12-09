@@ -2,9 +2,8 @@ package frc.robot.subsystems;
 
 public class MathUtils {
 
-    /**
-     * Deadband inteligente.
-     */
+    
+    // Deadband inteligente.
     public static double smartDeadband(double value, double deadband) {
         if (Math.abs(value) < deadband)
             return 0;

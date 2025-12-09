@@ -60,7 +60,6 @@ public class AlignToAprilTagCommand extends Command {
         drive.arcadeDrive(0, -turnPower, false);
     }
     
-
     @Override
     public void end(boolean interrupted) {
         drive.stop();
