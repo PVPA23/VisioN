@@ -46,7 +46,10 @@ public class RobotContainer {
         driveTab.add("Driver Camera", driverCam).withSize(4, 3);
 
         // Stream da camera PhotonVision
-        visionTab.add("AprilTag Camera", aprilTagCamera).withSize(4, 3);
+        visionTab.addCamera("AprilTag Camera",
+                        "aprilcam",
+                        "http://photonvision.local:5800/stream.mjpg")
+        .withSize(4, 3);
 
         // Função correta para pegar o último resultado
         visionTab.addBoolean("Tem Alvo?", () -> {

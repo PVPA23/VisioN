@@ -11,7 +11,7 @@ public class JoystickDriveCommand extends Command {
     private final Joystick joystick;
 
     // Configurações
-    private static final double DEADBAND = 0.08;
+    private static final double DEADBAND = 0.07;
     private static final double EXPO_FORWARD = 0.15;  // curva leve
     private static final double EXPO_ROTATION = 0.25; // curva mais forte para facilitar dirigir reto
 
@@ -24,8 +24,8 @@ public class JoystickDriveCommand extends Command {
     @Override 
     public void execute() {
 
-        double forward  = -joystick.getRawAxis(1);
-        double rotation =  joystick.getRawAxis(4);
+        double forward  =  joystick.getRawAxis(1);
+        double rotation =  joystick.getRawAxis(0);
 
         boolean boost = joystick.getRawButton(1);
 

@@ -106,8 +106,8 @@ public class DriveSubsystem extends SubsystemBase {
         double rightSpeed = forward - rotation;
 
         // LIMITAÇÃO
-        leftSpeed  = Math.max(Math.min(leftSpeed, 1.0), -1.0);
-        rightSpeed = Math.max(Math.min(rightSpeed, 1.0), -1.0);
+        leftSpeed  = Math.max(Math.min(leftSpeed, .5), -.5);
+        rightSpeed = Math.max(Math.min(rightSpeed, .5), -.5);
 
         // ENVIAR PARA MOTORES
         leftLeader.set(leftSpeed);
